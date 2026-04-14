@@ -1,0 +1,64 @@
+2026-04-13 23:05:31,837 - INFO - Starting training for 50 epochs
+2026-04-13 23:05:31,838 - INFO - Device: cuda
+2026-04-13 23:05:31,839 - INFO - Model parameters: 12,468,978
+2026-04-13 23:09:12,142 - INFO - Starting training for 50 epochs
+2026-04-13 23:09:12,143 - INFO - Device: cuda
+2026-04-13 23:09:12,144 - INFO - Model parameters: 12,468,978
+2026-04-13 23:11:25,528 - INFO - Starting training for 50 epochs
+2026-04-13 23:11:25,530 - INFO - Device: cuda
+2026-04-13 23:11:25,531 - INFO - Model parameters: 12,468,978
+2026-04-13 23:19:39,569 - INFO - Starting training for 50 epochs
+2026-04-13 23:19:39,570 - INFO - Device: cuda
+2026-04-13 23:19:39,572 - INFO - Model parameters: 12,468,978
+2026-04-13 23:21:29,891 - INFO - Starting training for 50 epochs
+2026-04-13 23:21:29,893 - INFO - Device: cuda
+2026-04-13 23:21:29,894 - INFO - Model parameters: 12,468,978
+2026-04-13 23:35:01,431 - INFO - Starting training for 50 epochs
+2026-04-13 23:35:01,433 - INFO - Device: cuda
+2026-04-13 23:35:01,433 - INFO - Model parameters: 12,468,978
+2026-04-13 23:35:38,345 - INFO - Starting training for 50 epochs
+2026-04-13 23:35:38,347 - INFO - Device: cuda
+2026-04-13 23:35:38,348 - INFO - Model parameters: 12,468,978
+2026-04-13 23:46:05,622 - INFO - Starting training for 50 epochs
+2026-04-13 23:46:05,625 - INFO - Device: cuda
+2026-04-13 23:46:05,626 - INFO - Model parameters: 12,468,978
+2026-04-13 23:48:11,915 - INFO - Starting training for 50 epochs
+2026-04-13 23:48:11,917 - INFO - Device: cuda
+2026-04-13 23:48:11,919 - INFO - Model parameters: 12,468,978
+2026-04-14 00:00:17,384 - INFO - Starting training for 50 epochs
+2026-04-14 00:00:17,384 - INFO - Device: cuda
+2026-04-14 00:00:17,387 - INFO - Model parameters: 12,468,978
+2026-04-14 00:10:55,050 - INFO - Starting training for 50 epochs
+2026-04-14 00:10:55,052 - INFO - Device: cuda
+2026-04-14 00:10:55,054 - INFO - Model parameters: 12,468,978
+2026-04-14 00:12:38,832 - INFO - Starting training for 50 epochs
+2026-04-14 00:12:38,834 - INFO - Device: cuda
+2026-04-14 00:12:38,838 - INFO - Model parameters: 12,468,978
+2026-04-14 00:18:43,073 - INFO - Starting training for 50 epochs
+2026-04-14 00:18:43,073 - INFO - Device: cuda
+2026-04-14 00:18:43,074 - INFO - Model parameters: 12,468,978
+2026-04-14 00:29:28,337 - INFO - Starting training for 50 epochs
+2026-04-14 00:29:28,339 - INFO - Device: cuda
+2026-04-14 00:29:28,341 - INFO - Model parameters: 12,468,978
+2026-04-14 01:00:44,416 - INFO - Starting training for 50 epochs
+2026-04-14 01:00:44,417 - INFO - Device: cuda
+2026-04-14 01:00:44,418 - INFO - Model parameters: 12,468,978
+2026-04-14 01:02:17,301 - INFO - Starting training for 20 epochs
+2026-04-14 01:02:17,302 - INFO - Device: cuda
+2026-04-14 01:02:17,303 - INFO - Model parameters: 12,468,978
+2026-04-14 01:18:12,611 - INFO - Starting training for 20 epochs
+2026-04-14 01:18:12,612 - INFO - Device: cuda
+2026-04-14 01:18:12,613 - INFO - Model parameters: 12,468,978
+2026-04-14 01:34:46,375 - INFO - Epoch 1/20 - Train Loss: 0.6963, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 01:34:46,764 - INFO - New best model saved with F1: 0.0356
+2026-04-14 01:51:04,552 - INFO - Epoch 2/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 02:07:17,214 - INFO - Epoch 3/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 02:23:38,759 - INFO - Epoch 4/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 02:40:03,781 - INFO - Epoch 5/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 02:56:35,252 - INFO - Epoch 6/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 03:13:05,209 - INFO - Epoch 7/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 03:29:37,704 - INFO - Epoch 8/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 03:46:00,530 - INFO - Epoch 9/20 - Train Loss: 0.6931, Val Loss: 0.6931, Val F1 (macro): 0.0356, Val F1 (micro): 0.0374
+2026-04-14 03:46:00,708 - INFO - Early stopping triggered at epoch 9
+2026-04-14 03:46:00,709 - INFO - Training completed. Best F1: 0.0356 at epoch 1
+2026-04-14 03:46:00,938 - INFO - Checkpoint loaded from epoch 0

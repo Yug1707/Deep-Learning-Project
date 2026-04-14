@@ -1,0 +1,36 @@
+{
+  "model_parameters": {
+    "num_classes": 114,
+    "input_channels": 1,
+    "hidden_size": 256,
+    "num_layers": 2,
+    "dropout": 0.3
+  },
+  "training_parameters": {
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 16,
+    "num_epochs": 100
+  },
+  "scheduler_parameters": {
+    "T_0": 10,
+    "T_mult": 2,
+    "eta_min": 0.000001
+  },
+  "augmentation_parameters": {
+    "use_mixup": true,
+    "mixup_alpha": 0.2,
+    "mixup_prob": 0.5
+  },
+  "training_settings": {
+    "threshold": 0.5,
+    "use_amp": true,
+    "early_stopping_patience": 20,
+    "save_freq": 10
+  },
+  "paths": {
+    "checkpoint_dir": "checkpoints",
+    "log_dir": "logs"
+  },
+  "device": "cuda"
+}
