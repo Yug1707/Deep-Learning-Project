@@ -1,0 +1,5 @@
+# Additive dependencies for the parallel VGGish + XGBoost pipeline
+xgboost>=2.0.0
+joblib>=1.3.0
+# PyTorch VGGish port
+torchvggish>=0.2.0
