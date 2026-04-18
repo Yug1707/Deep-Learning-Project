@@ -5,6 +5,7 @@ from __future__ import annotations
 import numpy as np
 
 from utils.vggish_extractor import pool_embeddings
+from utils.metrics import MultiLabelMetrics
 from training.vggish_xgboost.build_dataset import build_balanced_subset_indices
 
 
@@ -38,6 +39,31 @@ def test_balancer() -> None:
     assert selected_idx.size > 0
     assert target > 0
     assert np.all(class_counts <= target)
+
+    # Regression check: reported class counts must match selected samples.
+    recomputed = labels[selected_idx].sum(axis=0)
+    assert np.array_equal(class_counts, recomputed)
+
+
+def test_metrics_precision_at_k_small_class_count() -> None:
+    try:
+        import torch
+    except ImportError:
+        print("Skipping metrics top-k test: torch not installed")
+        return
+
+    metrics = MultiLabelMetrics(threshold=0.5)
+
+    # 8 classes only, while calculate_all_metrics internally asks for @10.
+    predictions = torch.rand(12, 8)
+    targets = torch.randint(0, 2, (12, 8)).float()
+
+    output = metrics.calculate_all_metrics(predictions, targets)
+
+    assert "precision_at_5" in output
+    assert "precision_at_10" in output
+    assert 0.0 <= output["precision_at_5"] <= 1.0
+    assert 0.0 <= output["precision_at_10"] <= 1.0
 
 
 def test_xgboost_fit_predict() -> None:
@@ -84,6 +110,9 @@ def run_all_tests() -> None:
 
     test_balancer()
     print("[PASS] balancing")
+
+    test_metrics_precision_at_k_small_class_count()
+    print("[PASS] metrics top-k")
 
     test_xgboost_fit_predict()
     print("[PASS] xgboost smoke")

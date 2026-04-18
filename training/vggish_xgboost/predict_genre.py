@@ -21,11 +21,16 @@ def _predict_one(
     extractor: VGGishExtractor,
     audio_path: Path,
     sample_rate: int,
+    res_type: str,
     pooling: str,
     threshold: float,
     class_map: Dict[str, str],
 ) -> Dict:
-    frames = extractor.extract_from_file(audio_path, sample_rate=sample_rate)
+    frames = extractor.extract_from_file(
+        audio_path,
+        sample_rate=sample_rate,
+        res_type=res_type,
+    )
     pooled = pool_embeddings(frames, mode=pooling).reshape(1, -1)
 
     probs = model.predict_proba(pooled)[0]
@@ -75,6 +80,7 @@ def main() -> None:
 
     paths = config["paths"]
     sample_rate = int(config["audio"]["sample_rate"])
+    res_type = str(config["audio"].get("res_type", "soxr_hq"))
     pooling = config["vggish"].get("pooling", "mean")
     threshold = float(args.threshold) if args.threshold is not None else float(config["evaluation"]["threshold"])
 
@@ -89,7 +95,7 @@ def main() -> None:
         audio_paths.append(Path(args.audio))
     if args.audio_dir:
         base = Path(args.audio_dir)
-        audio_paths.extend([p for p in base.rglob("*") if p.suffix.lower() in SUPPORTED_EXTS])
+        audio_paths.extend(sorted([p for p in base.rglob("*") if p.suffix.lower() in SUPPORTED_EXTS]))
 
     results: List[Dict] = []
     for audio_path in audio_paths:
@@ -99,6 +105,7 @@ def main() -> None:
                 extractor=extractor,
                 audio_path=audio_path,
                 sample_rate=sample_rate,
+                res_type=res_type,
                 pooling=pooling,
                 threshold=threshold,
                 class_map=class_map,

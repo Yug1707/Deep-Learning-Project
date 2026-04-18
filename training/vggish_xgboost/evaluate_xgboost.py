@@ -31,21 +31,33 @@ def _evaluate_split(
     threshold: float,
     class_map: Dict[str, str],
 ) -> Dict:
+    if data["X"].shape[0] == 0:
+        return {
+            "split": split,
+            "num_samples": 0,
+            "metrics": MultiLabelMetrics(threshold=threshold).calculate_all_metrics(
+                predictions=torch.zeros((0, data["y"].shape[1]), dtype=torch.float32),
+                targets=torch.zeros((0, data["y"].shape[1]), dtype=torch.float32),
+            ),
+            "per_class_confusion": [],
+        }
+
     probs = model.predict_proba(data["X"])
+    y_true = (data["y"] >= 0.5).astype(np.int64)
     preds = (probs >= threshold).astype(np.int64)
 
     metrics_calc = MultiLabelMetrics(threshold=threshold)
     metrics = metrics_calc.calculate_all_metrics(
         predictions=torch.tensor(probs, dtype=torch.float32),
-        targets=torch.tensor(data["y"], dtype=torch.float32),
+        targets=torch.tensor(y_true, dtype=torch.float32),
     )
 
-    confusion = multilabel_confusion_matrix(data["y"].astype(np.int64), preds)
+    confusion = multilabel_confusion_matrix(y_true, preds)
     per_class: List[Dict] = []
     for class_idx, matrix in enumerate(confusion):
         tn, fp, fn, tp = matrix.ravel().tolist()
         class_f1 = f1_score(
-            data["y"][:, class_idx].astype(np.int64),
+            y_true[:, class_idx],
             preds[:, class_idx],
             zero_division=0,
         )
@@ -53,7 +65,7 @@ def _evaluate_split(
             {
                 "class_index": class_idx,
                 "genre_id": class_map.get(str(class_idx), str(class_idx)),
-                "support": int(data["y"][:, class_idx].sum()),
+                "support": int(y_true[:, class_idx].sum()),
                 "f1": float(class_f1),
                 "tn": int(tn),
                 "fp": int(fp),

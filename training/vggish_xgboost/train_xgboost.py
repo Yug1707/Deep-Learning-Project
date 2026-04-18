@@ -25,6 +25,18 @@ def _load_split(npz_path: Path) -> Dict[str, np.ndarray]:
     }
 
 
+def _validate_split(name: str, split: Dict[str, np.ndarray]) -> None:
+    X = split["X"]
+    y = split["y"]
+
+    if X.ndim != 2:
+        raise ValueError(f"{name} X must be 2D, got shape {X.shape}")
+    if y.ndim != 2:
+        raise ValueError(f"{name} y must be 2D, got shape {y.shape}")
+    if X.shape[0] != y.shape[0]:
+        raise ValueError(f"{name} X/y row mismatch: {X.shape[0]} vs {y.shape[0]}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train One-vs-Rest XGBoost for multi-label genre classification")
     parser.add_argument(
@@ -49,6 +61,30 @@ def main() -> None:
     train = _load_split(pooled_dir / "train_pooled.npz")
     val = _load_split(pooled_dir / "val_pooled.npz")
 
+    _validate_split("train", train)
+    _validate_split("val", val)
+
+    if train["X"].shape[0] == 0:
+        raise ValueError("Train split is empty. Run extraction and check failures before training")
+
+    if train["y"].shape[1] == 0:
+        raise ValueError("Train labels have zero classes")
+
+    train_y_int = (train["y"] >= 0.5).astype(np.int64)
+    val_y_int = (val["y"] >= 0.5).astype(np.int64)
+
+    class_positives = train_y_int.sum(axis=0)
+    no_positive = np.where(class_positives == 0)[0]
+    all_positive = np.where(class_positives == train_y_int.shape[0])[0]
+    if no_positive.size > 0:
+        raise ValueError(
+            f"Cannot train: classes with no positive samples in train split: {no_positive.tolist()}"
+        )
+    if all_positive.size > 0:
+        raise ValueError(
+            f"Cannot train: classes with no negative samples in train split: {all_positive.tolist()}"
+        )
+
     base_estimator = XGBClassifier(
         objective="binary:logistic",
         n_estimators=int(xgb_cfg["n_estimators"]),
@@ -65,14 +101,17 @@ def main() -> None:
     )
 
     model = OneVsRestClassifier(base_estimator)
-    model.fit(train["X"], train["y"])
+    model.fit(train["X"], train_y_int)
 
-    val_probs = model.predict_proba(val["X"])
+    if val["X"].shape[0] > 0:
+        val_probs = model.predict_proba(val["X"])
+    else:
+        val_probs = np.zeros((0, train_y_int.shape[1]), dtype=np.float32)
 
     metrics_calc = MultiLabelMetrics(threshold=threshold)
     val_metrics = metrics_calc.calculate_all_metrics(
         predictions=torch.tensor(val_probs, dtype=torch.float32),
-        targets=torch.tensor(val["y"], dtype=torch.float32),
+        targets=torch.tensor(val_y_int, dtype=torch.float32),
     )
 
     model_path = models_dir / "xgboost_ovr.joblib"

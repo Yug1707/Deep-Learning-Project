@@ -12,6 +12,7 @@ from tqdm.auto import tqdm
 
 from training.vggish_xgboost.common import ensure_dir, load_config, project_root, save_json, set_seed
 from utils.vggish_extractor import VGGishExtractor, pool_embeddings
+from utils.vggish_audio import get_audio_duration, load_audio_16k_mono
 
 
 def _label_columns(df: pd.DataFrame) -> List[str]:
@@ -23,6 +24,8 @@ def _extract_split(
     split: str,
     extractor: VGGishExtractor,
     sample_rate: int,
+    res_type: str,
+    min_audio_seconds: float,
     pooling: str,
     frames_dir: Path,
     pooled_dir: Path,
@@ -41,7 +44,21 @@ def _extract_split(
         audio_path = Path(row.audio_path)
 
         try:
-            frames = extractor.extract_from_file(audio_path, sample_rate=sample_rate)
+            waveform = load_audio_16k_mono(
+                audio_path,
+                sample_rate=sample_rate,
+                res_type=res_type,
+            )
+            duration = get_audio_duration(waveform, sample_rate)
+            if duration < min_audio_seconds:
+                raise ValueError(
+                    f"Audio too short ({duration:.2f}s < {min_audio_seconds:.2f}s minimum)"
+                )
+
+            frames = extractor.extract_from_waveform(waveform, sample_rate=sample_rate)
+            if frames.size == 0:
+                raise ValueError("No VGGish frames extracted from audio")
+
             pooled = pool_embeddings(frames, mode=pooling)
 
             frame_path = frames_dir / f"{split}_{track_id}.npy"
@@ -135,6 +152,8 @@ def main() -> None:
             split=split,
             extractor=extractor,
             sample_rate=int(audio_cfg["sample_rate"]),
+            res_type=str(audio_cfg.get("res_type", "soxr_hq")),
+            min_audio_seconds=float(config["dataset"].get("min_audio_seconds", 0.0)),
             pooling=vggish_cfg.get("pooling", "mean"),
             frames_dir=frames_dir,
             pooled_dir=pooled_dir,

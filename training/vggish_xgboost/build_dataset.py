@@ -24,10 +24,13 @@ def get_audio_path(track_id: int, audio_dir: str) -> Path:
 def build_balanced_subset_indices(labels: np.ndarray, seed: int) -> Tuple[np.ndarray, np.ndarray, int]:
     """Select examples while capping each class to the same positive count."""
     positive_counts = labels.sum(axis=0).astype(int)
+    if np.any(positive_counts <= 0):
+        raise ValueError("Cannot balance labels when one or more classes have zero positives")
+
     target = int(positive_counts.min())
 
     num_classes = labels.shape[1]
-    selected: List[int] = []
+    selected = np.zeros(labels.shape[0], dtype=bool)
     class_counts = np.zeros(num_classes, dtype=np.int64)
     rng = np.random.default_rng(seed)
 
@@ -35,6 +38,9 @@ def build_balanced_subset_indices(labels: np.ndarray, seed: int) -> Tuple[np.nda
         order = rng.permutation(labels.shape[0])
         changed = False
         for idx in order:
+            if selected[idx]:
+                continue
+
             y = labels[idx]
             pos = np.where(y == 1)[0]
             if pos.size == 0:
@@ -44,7 +50,7 @@ def build_balanced_subset_indices(labels: np.ndarray, seed: int) -> Tuple[np.nda
             if np.any(class_counts[pos] >= target):
                 continue
 
-            selected.append(int(idx))
+            selected[idx] = True
             class_counts[pos] += 1
             changed = True
 
@@ -53,8 +59,8 @@ def build_balanced_subset_indices(labels: np.ndarray, seed: int) -> Tuple[np.nda
         if not changed:
             break
 
-    selected = np.array(sorted(set(selected)), dtype=np.int64)
-    return selected, class_counts, target
+    selected_idx = np.where(selected)[0].astype(np.int64)
+    return selected_idx, class_counts, target
 
 
 def _safe_stratify_targets(labels: np.ndarray) -> np.ndarray | None:
@@ -77,7 +83,11 @@ def _split_indices(
     if not np.isclose(train_size + val_size + test_size, 1.0):
         raise ValueError("train_size + val_size + test_size must be 1.0")
 
-    all_indices = np.arange(labels.shape[0])
+    num_rows = labels.shape[0]
+    if num_rows < 3:
+        raise ValueError("Need at least 3 samples to create train/val/test splits")
+
+    all_indices = np.arange(num_rows)
     stratify_full = _safe_stratify_targets(labels)
 
     train_idx, temp_idx = train_test_split(
@@ -91,6 +101,12 @@ def _split_indices(
     stratify_temp = _safe_stratify_targets(temp_labels)
 
     val_ratio_within_temp = val_size / (val_size + test_size)
+    if temp_idx.shape[0] < 2:
+        raise ValueError(
+            "Not enough samples for val/test split after train split. "
+            "Increase dataset size or adjust split ratios."
+        )
+
     val_idx_rel, test_idx_rel = train_test_split(
         np.arange(temp_idx.shape[0]),
         test_size=(1.0 - val_ratio_within_temp),
@@ -100,6 +116,12 @@ def _split_indices(
 
     val_idx = temp_idx[val_idx_rel]
     test_idx = temp_idx[test_idx_rel]
+
+    if train_idx.size == 0 or val_idx.size == 0 or test_idx.size == 0:
+        raise ValueError(
+            "Split configuration produced an empty partition. "
+            "Adjust train/val/test ratios or dataset filtering."
+        )
 
     return train_idx, val_idx, test_idx
 
@@ -143,6 +165,13 @@ def main() -> None:
     output_root = ensure_dir(root / paths["output_root"])
     manifests_dir = ensure_dir(output_root / "manifests")
 
+    if not metadata_csv.exists():
+        raise FileNotFoundError(
+            "Missing metadata CSV required for label generation: "
+            f"{metadata_csv}. Download FMA metadata (tracks.csv) and either place it "
+            "under fma_metadata/tracks.csv or update paths.metadata_csv in the config."
+        )
+
     tracks = pd.read_csv(metadata_csv, index_col=0, header=[0, 1])
     subset = tracks[tracks[("set", "subset")] == dataset_cfg["subset"]]
 
@@ -183,6 +212,19 @@ def main() -> None:
         raise RuntimeError("No valid records found after filtering to top-k genres")
 
     labels = np.stack([rec["labels"] for rec in records], axis=0)
+
+    positive_counts_before = labels.sum(axis=0).astype(int)
+    valid_class_indices = np.where(positive_counts_before > 0)[0]
+    if valid_class_indices.size == 0:
+        raise RuntimeError("No positive labels found after audio/file filtering")
+
+    if valid_class_indices.size < labels.shape[1]:
+        labels = labels[:, valid_class_indices]
+        top_genres = [top_genres[int(i)] for i in valid_class_indices]
+        top_k = len(top_genres)
+
+        for rec_idx, rec in enumerate(records):
+            records[rec_idx]["labels"] = rec["labels"][valid_class_indices]
 
     if dataset_cfg["balancing"]["enabled"]:
         selected_idx, class_counts, target = build_balanced_subset_indices(labels, seed)

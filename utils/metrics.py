@@ -50,6 +50,9 @@ class MultiLabelMetrics:
         Returns:
             F1 score
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_binary = self._threshold_predictions(predictions)
         
         # Convert to numpy for sklearn
@@ -71,6 +74,9 @@ class MultiLabelMetrics:
         Returns:
             Precision score
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_binary = self._threshold_predictions(predictions)
         
         pred_np = pred_binary.cpu().numpy()
@@ -91,6 +97,9 @@ class MultiLabelMetrics:
         Returns:
             Recall score
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_binary = self._threshold_predictions(predictions)
         
         pred_np = pred_binary.cpu().numpy()
@@ -111,6 +120,9 @@ class MultiLabelMetrics:
         Returns:
             ROC AUC score
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_np = predictions.cpu().numpy()
         target_np = targets.cpu().numpy()
         
@@ -131,6 +143,9 @@ class MultiLabelMetrics:
         Returns:
             Hamming loss
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_binary = self._threshold_predictions(predictions)
         
         pred_np = pred_binary.cpu().numpy()
@@ -149,6 +164,9 @@ class MultiLabelMetrics:
         Returns:
             Subset accuracy
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         pred_binary = self._threshold_predictions(predictions)
         
         # Check if all labels match exactly
@@ -168,10 +186,20 @@ class MultiLabelMetrics:
         Returns:
             Precision@k score
         """
+        if predictions.numel() == 0 or targets.numel() == 0:
+            return 0.0
+
         batch_size = predictions.size(0)
+        num_classes = predictions.size(1)
+        if num_classes <= 0:
+            return 0.0
+
+        effective_k = min(k, num_classes)
+        if effective_k <= 0:
+            return 0.0
         
         # Get top-k predictions
-        _, top_k_indices = torch.topk(predictions, k, dim=1)
+        _, top_k_indices = torch.topk(predictions, effective_k, dim=1)
         
         # Check how many of the top-k predictions are actually present in targets
         correct = 0
@@ -184,7 +212,7 @@ class MultiLabelMetrics:
             # Count correct predictions
             intersection = len(set(pred_labels.tolist()) & set(true_labels.tolist()))
             correct += intersection
-            total += k
+            total += effective_k
         
         return correct / total if total > 0 else 0.0
     
