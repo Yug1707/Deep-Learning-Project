@@ -1,0 +1,60 @@
+{
+  "seed": 42,
+  "paths": {
+    "audio_dir": "fma_small",
+    "metadata_csv": "fma_metadata/tracks.csv",
+    "output_root": "logs/ast_pipeline",
+    "manifests_dir": "logs/ast_pipeline/manifests",
+    "checkpoints_dir": "logs/ast_pipeline/checkpoints",
+    "models_dir": "logs/ast_pipeline/models",
+    "results_dir": "logs/ast_pipeline/results",
+    "predictions_dir": "logs/ast_pipeline/predictions",
+    "runtime_logs_dir": "logs/ast_pipeline/runtime_logs"
+  },
+  "dataset": {
+    "subset": "small",
+    "top_k_genres": 8,
+    "train_size": 0.7,
+    "val_size": 0.15,
+    "test_size": 0.15,
+    "min_audio_seconds": 2.0,
+    "balancing": {
+      "enabled": true,
+      "mode": "cap_to_min_positive"
+    }
+  },
+  "audio": {
+    "sample_rate": 16000,
+    "mono": true,
+    "res_type": "soxr_hq",
+    "clip_seconds": 10.0
+  },
+  "ast": {
+    "model_name": "MIT/ast-finetuned-audioset-10-10-0.4593",
+    "cache_dir": null,
+    "freeze_feature_encoder_epochs": 1,
+    "chunk_seconds": 10.0,
+    "chunk_hop_seconds": 5.0,
+    "max_chunks_per_track": 12
+  },
+  "training": {
+    "batch_size": 8,
+    "num_workers": 4,
+    "num_epochs": 10,
+    "learning_rate": 2e-05,
+    "weight_decay": 0.01,
+    "gradient_accumulation_steps": 1,
+    "max_grad_norm": 1.0,
+    "save_every": 1,
+    "amp": true,
+    "pin_memory": true
+  },
+  "evaluation": {
+    "threshold": 0.5
+  },
+  "inference": {
+    "batch_size": 8,
+    "num_workers": 2,
+    "write_top_k": 5
+  }
+}
