@@ -127,9 +127,9 @@ class MultiLabelMetrics:
         target_np = targets.cpu().numpy()
         
         try:
-            return roc_auc_score(target_np, pred_np, average=average)
-        except ValueError:
-            # Handle case where only one class is present
+            score = roc_auc_score(target_np, pred_np, average=average)
+            return 0.0 if np.isnan(score) else score
+        except (ValueError, Exception):
             return 0.0
     
     def calculate_hamming_loss(self, predictions: torch.Tensor, targets: torch.Tensor) -> float:

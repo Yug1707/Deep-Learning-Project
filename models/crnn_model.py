@@ -17,10 +17,13 @@ class CRNN(nn.Module):
     Architecture:
     - CNN feature extractor (4 conv layers)
     - Bidirectional LSTM for temporal modeling
-    - Fully connected classifier with sigmoid activation
+    - Fully connected classifier (raw logits — NO sigmoid here)
     
-    Input: (batch_size, channels, height, width) = (batch_size, 10, 1, 128, 130)
-    Output: (batch_size, num_classes) with sigmoid activation
+    Input:  (batch_size, segments, channels, height, width)  [5D]
+            or (batch_size, channels, height, width)          [4D]
+    Output: (batch_size, num_classes) — raw logits
+            Use BCEWithLogitsLoss during training.
+            Apply torch.sigmoid() explicitly for inference/metrics.
     """
     
     def __init__(self, num_classes=114, input_channels=1, hidden_size=256, num_layers=2, dropout=0.3):
@@ -57,12 +60,12 @@ class CRNN(nn.Module):
         )
         
         # Calculate the size after conv layers for the LSTM input
-        # Input: (batch, 1, 128, 130) -> after convs: (batch, 512, 8, 16)
-        self.conv_output_size = 512 * 8 * 16
-        
+        # Input: (batch, 1, 128, 130) -> after convs: (batch, 512, 8, 8)
+        self.conv_output_size = 512 * 8 * 8
+
         # Bidirectional LSTM
         self.lstm = nn.LSTM(
-            input_size=self.conv_output_size // 16,  # width after convs
+            input_size=self.conv_output_size // 8,  # features per time step
             hidden_size=hidden_size,
             num_layers=num_layers,
             batch_first=True,
@@ -73,7 +76,7 @@ class CRNN(nn.Module):
         # Dropout for regularization
         self.dropout = nn.Dropout(dropout)
         
-        # Fully connected layers
+        # Fully connected layers — outputs raw logits (no sigmoid)
         self.fc_layers = nn.Sequential(
             nn.Linear(hidden_size * 2, 512),  # *2 for bidirectional
             nn.ReLU(inplace=True),
@@ -82,6 +85,7 @@ class CRNN(nn.Module):
             nn.ReLU(inplace=True),
             nn.Dropout(dropout),
             nn.Linear(256, num_classes)
+            # NO sigmoid here — BCEWithLogitsLoss handles it during training
         )
         
     def forward(self, x):
@@ -89,52 +93,50 @@ class CRNN(nn.Module):
         Forward pass through the CRNN model.
         
         Args:
-            x: Input tensor of shape (batch_size, segments, channels, height, width)
-               or (batch_size, channels, height, width) if segments are already batched
+            x: Input tensor of shape (batch_size, segments, channels, height, width) [5D]
+               or (batch_size, channels, height, width) [4D]
         
         Returns:
-            Output tensor of shape (batch_size, num_classes) with sigmoid activation
+            Raw logits of shape (batch_size, num_classes).
+            Apply torch.sigmoid() explicitly for inference or metrics.
         """
         # Handle both 5D (with segments) and 4D input
         if x.dim() == 5:
             batch_size, segments, channels, height, width = x.shape
-            # Reshape to process all segments
             x = x.view(batch_size * segments, channels, height, width)
             has_segments = True
         else:
             batch_size = x.shape[0]
+            segments = 1
             has_segments = False
         
         # CNN feature extraction
-        conv_out = self.conv_layers(x)  # (batch*segments, 512, 8, 16)
+        conv_out = self.conv_layers(x)  # (batch*segments, 512, H', W')
         
         # Reshape for LSTM: (batch, time_steps, features)
         batch_size_segments = conv_out.size(0)
-        conv_out = conv_out.permute(0, 2, 3, 1)  # (batch*segments, 8, 16, 512)
-        conv_out = conv_out.contiguous().view(batch_size_segments, 8, -1)  # (batch*segments, 8, 8192)
+        h = conv_out.size(2)
+        conv_out = conv_out.permute(0, 2, 3, 1)  # (batch*segments, H', W', 512)
+        conv_out = conv_out.contiguous().view(batch_size_segments, h, -1)  # (batch*segments, H', W'*512)
         
         # LSTM processing
-        lstm_out, (hidden, cell) = self.lstm(conv_out)  # (batch*segments, 8, 512)
+        lstm_out, _ = self.lstm(conv_out)
         
         # Take the last time step output
-        lstm_out = lstm_out[:, -1, :]  # (batch*segments, 512)
+        lstm_out = lstm_out[:, -1, :]  # (batch*segments, hidden*2)
         
         # Apply dropout
         lstm_out = self.dropout(lstm_out)
         
-        # Fully connected layers
+        # Fully connected layers → raw logits
         output = self.fc_layers(lstm_out)  # (batch*segments, num_classes)
         
-        # Apply sigmoid activation for multi-label classification
-        output = torch.sigmoid(output)
-        
-        # Reshape back if we had segments
+        # Average across segments to get one prediction per track
         if has_segments:
             output = output.view(batch_size, segments, self.num_classes)
-            # Average across segments
             output = torch.mean(output, dim=1)  # (batch_size, num_classes)
         
-        return output
+        return output  # raw logits — caller applies sigmoid for inference
 
 
 def create_crnn_model(num_classes=114, input_channels=1, hidden_size=256, num_layers=2, dropout=0.3):
@@ -185,18 +187,18 @@ def create_crnn_model(num_classes=114, input_channels=1, hidden_size=256, num_la
 
 
 if __name__ == "__main__":
-    # Test the model
     model = create_crnn_model(num_classes=114)
     
-    # Test with sample input (batch_size=4, segments=10, channels=1, height=128, width=130)
+    # Test with 5D input (batch_size=4, segments=10, channels=1, height=128, width=130)
     sample_input = torch.randn(4, 10, 1, 128, 130)
     output = model(sample_input)
-    print(f"Input shape: {sample_input.shape}")
-    print(f"Output shape: {output.shape}")
-    print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
+    print(f"5D Input shape: {sample_input.shape}")
+    print(f"Output shape:   {output.shape}")   # expect (4, 114)
+    print(f"Output range:   {output.min().item():.3f} to {output.max().item():.3f}  (raw logits)")
     
-    # Test without segments
-    sample_input_2d = torch.randn(4, 1, 128, 130)
-    output_2d = model(sample_input_2d)
-    print(f"2D Input shape: {sample_input_2d.shape}")
-    print(f"2D Output shape: {output_2d.shape}")
+    # Test with 4D input
+    sample_input_4d = torch.randn(4, 1, 128, 130)
+    output_4d = model(sample_input_4d)
+    print(f"4D Input shape: {sample_input_4d.shape}")
+    print(f"Output shape:   {output_4d.shape}")
+    print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")

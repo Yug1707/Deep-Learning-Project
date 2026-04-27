@@ -24,22 +24,22 @@
     "device": "cuda"
   },
   "final_metrics": {
-    "f1_macro": 0.03564011329235296,
-    "f1_micro": 0.03740127827153586,
-    "precision_macro": 0.019057017543859647,
-    "precision_micro": 0.01905701754385965,
-    "recall_macro": 0.9824561403508771,
-    "recall_micro": 1.0,
-    "roc_auc_macro": NaN,
-    "roc_auc_micro": 0.5,
-    "hamming_loss": 0.9809429824561403,
-    "subset_accuracy": 0.0,
-    "precision_at_5": 0.08425,
-    "precision_at_10": 0.0876875,
-    "loss": 0.6931471824645996
+    "f1_macro": 0.012856678141706943,
+    "f1_micro": 0.12647427854454205,
+    "precision_macro": 0.020428028454465626,
+    "precision_micro": 0.4950884086444008,
+    "recall_macro": 0.011736116393258906,
+    "recall_micro": 0.07249712313003452,
+    "roc_auc_macro": 0.0,
+    "roc_auc_micro": 0.8938598374752089,
+    "hamming_loss": 0.019084429824561405,
+    "subset_accuracy": 0.008124999701976776,
+    "precision_at_5": 0.205125,
+    "precision_at_10": 0.1349375,
+    "loss": 0.06869830597192049
   },
-  "best_f1_macro": 0.03564011329235296,
-  "best_epoch": 0,
+  "best_f1_macro": 0.012856678141706943,
+  "best_epoch": 17,
   "model_parameters": 12468978,
   "training_completed": true
 }
