@@ -1,0 +1,414 @@
+{
+  "valid_files": [
+    {
+      "path": "fma_small/000/000002.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000005.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000010.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000140.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000141.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000148.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000182.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000190.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000193.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000194.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000197.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000200.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000203.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000204.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000207.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000210.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000211.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000212.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000213.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000255.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000256.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000368.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000424.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000459.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000534.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000540.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000546.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000574.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000602.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000615.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000620.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000621.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000625.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000666.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000667.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000676.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000690.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000694.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000695.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000704.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000705.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000706.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000707.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000708.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000709.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000714.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000715.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000716.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000718.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000777.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000814.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000821.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000822.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000825.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000853.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000890.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000892.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000897.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/000/000993.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000995.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000997.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/000/000998.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001039.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001040.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001066.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001069.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001073.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001075.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001082.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001083.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001087.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001102.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001193.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001195.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001196.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001197.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001249.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001259.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001270.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001276.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001277.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001278.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001417.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001427.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001443.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001482.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001510.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001544.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001642.mp3",
+      "duration": 29.989
+    },
+    {
+      "path": "fma_small/001/001644.mp3",
+      "duration": 29.989
+    },
+    {
+      "path": "fma_small/001/001649.mp3",
+      "duration": 29.989
+    },
+    {
+      "path": "fma_small/001/001661.mp3",
+      "duration": 29.989
+    },
+    {
+      "path": "fma_small/001/001663.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001666.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001673.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001680.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001681.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001682.mp3",
+      "duration": 29.976625
+    },
+    {
+      "path": "fma_small/001/001683.mp3",
+      "duration": 30.00275
+    },
+    {
+      "path": "fma_small/001/001684.mp3",
+      "duration": 29.976625
+    }
+  ],
+  "corrupted_files": [],
+  "silent_files": [],
+  "very_short_files": [],
+  "error_summary": {},
+  "counts": {
+    "total_valid": 1000,
+    "total_corrupted": 0,
+    "total_silent": 0,
+    "total_short": 0
+  }
+}

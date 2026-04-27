@@ -22,9 +22,22 @@ from training.ast_pipeline.common import (
 
 
 def get_audio_path(track_id: int, audio_dir: str) -> Path:
-    """Return expected FMA file path for track id."""
+    """Return expected FMA file path for track id.
+    
+    Note: Prefers .wav files (more reliable decoding) over .mp3.
+    If you haven't yet re-encoded MP3 files, see AUDIO_CORRUPTION_FIX.md
+    """
     track_str = f"{track_id:06d}"
-    return Path(audio_dir) / track_str[:3] / f"{track_str}.mp3"
+    track_dir = Path(audio_dir) / track_str[:3]
+    
+    # Try WAV first (re-encoded, more reliable)
+    wav_path = track_dir / f"{track_str}.wav"
+    if wav_path.exists():
+        return wav_path
+    
+    # Fallback to MP3 (for backwards compatibility, but not recommended)
+    mp3_path = track_dir / f"{track_str}.mp3"
+    return mp3_path
 
 
 def build_balanced_subset_indices(labels: np.ndarray, seed: int) -> Tuple[np.ndarray, np.ndarray, int]:

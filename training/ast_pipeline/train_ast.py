@@ -30,6 +30,7 @@ from training.ast_pipeline.model import (
     load_feature_extractor,
     save_hf_artifacts,
     unfreeze_backbone,
+    apply_classifier_dropout,
 )
 from utils.metrics import MultiLabelMetrics
 
@@ -186,7 +187,14 @@ def main() -> None:
     cache_dir = ast_cfg.get("cache_dir")
 
     feature_extractor = load_feature_extractor(model_name=model_name, cache_dir=cache_dir)
-    model = create_ast_model(model_name=model_name, num_labels=num_labels, cache_dir=cache_dir).to(device)
+    model = create_ast_model(
+        model_name=model_name,
+        num_labels=num_labels,
+        cache_dir=cache_dir,
+        hidden_dropout_prob=ast_cfg.get("hidden_dropout_prob"),
+        attention_probs_dropout_prob=ast_cfg.get("attention_probs_dropout_prob"),
+    ).to(device)
+    apply_classifier_dropout(model, dropout_prob=float(ast_cfg.get("classifier_dropout_prob", 0.3)))
 
     freeze_epochs = int(ast_cfg.get("freeze_feature_encoder_epochs", 0))
     if freeze_epochs > 0:

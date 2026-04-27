@@ -1,0 +1,41 @@
+{
+  "audio_stats": {
+    "total": 1000,
+    "silent": 0,
+    "very_short": 0,
+    "short": 0,
+    "normal": 1000,
+    "long": 0,
+    "mean_duration": 29.988484250000003,
+    "mean_rms": 0.1653824895620346
+  },
+  "label_stats": {
+    "total_tracks": 8000,
+    "unique_genres": 114,
+    "top_genres": {
+      "21": 1000,
+      "10": 1000,
+      "17": 1000,
+      "38": 1000,
+      "12": 1000,
+      "2": 1000,
+      "15": 1000,
+      "1235": 1000,
+      "18": 685,
+      "76": 403
+    },
+    "avg_labels_per_track": 2.181125,
+    "max_labels_per_track": 8,
+    "min_labels_per_track": 1,
+    "label_distribution": {
+      "1": 2137,
+      "2": 3364,
+      "3": 1699,
+      "4": 596,
+      "5": 147,
+      "7": 12,
+      "6": 38,
+      "8": 7
+    }
+  }
+}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Dict, List
 
@@ -22,7 +23,7 @@ from training.ast_pipeline.common import (
     set_seed,
 )
 from training.ast_pipeline.data import ASTBatchCollator, ASTManifestDataset
-from training.ast_pipeline.model import create_ast_model, load_feature_extractor
+from training.ast_pipeline.model import create_ast_model, load_feature_extractor, apply_classifier_dropout
 from utils.metrics import MultiLabelMetrics
 
 
@@ -31,6 +32,14 @@ def _load_class_map(manifests_dir: Path) -> Dict[str, str]:
     with open(mapping_path, "r", encoding="utf-8") as handle:
         payload = json.load(handle)
     return payload.get("index_to_genre", {})
+
+
+def _resolve_model_source(models_dir: Path, model_name: str) -> tuple[str, bool]:
+    """Prefer local saved Hugging Face artifacts when available."""
+    required = ["config.json", "preprocessor_config.json"]
+    if models_dir.exists() and all((models_dir / filename).exists() for filename in required):
+        return str(models_dir), True
+    return model_name, False
 
 
 def _evaluate_split(
@@ -122,16 +131,40 @@ def main() -> None:
     audio_cfg = config["audio"]
     ast_cfg = config["ast"]
     threshold = float(config["evaluation"]["threshold"])
+    inference_cfg = config.get("inference", {})
+    eval_num_workers = int(inference_cfg.get("num_workers", 0))
+
+    if sys.version_info >= (3, 14) and eval_num_workers > 0:
+        logger.warning(
+            "Python %s detected; forcing evaluate DataLoader num_workers=0 for stability",
+            ".".join(map(str, sys.version_info[:3])),
+        )
+        eval_num_workers = 0
 
     class_map = _load_class_map(dirs["manifests_dir"])
     num_labels = len(class_map)
 
-    feature_extractor = load_feature_extractor(ast_cfg["model_name"], cache_dir=ast_cfg.get("cache_dir"))
+    model_source, local_only = _resolve_model_source(dirs["models_dir"], ast_cfg["model_name"])
+    if local_only:
+        logger.info("Loading feature extractor/model from local artifacts: %s", model_source)
+    else:
+        logger.info("Local artifacts not found in %s; loading from %s", dirs["models_dir"], model_source)
+
+    feature_extractor = load_feature_extractor(
+        model_source,
+        cache_dir=ast_cfg.get("cache_dir"),
+        local_files_only=local_only,
+    )
     model = create_ast_model(
-        model_name=ast_cfg["model_name"],
+        model_name=model_source,
         num_labels=num_labels,
         cache_dir=ast_cfg.get("cache_dir"),
+        local_files_only=local_only,
+        hidden_dropout_prob=ast_cfg.get("hidden_dropout_prob"),
+        attention_probs_dropout_prob=ast_cfg.get("attention_probs_dropout_prob"),
+        classifier_dropout_prob=ast_cfg.get("classifier_dropout_prob"),
     )
+    apply_classifier_dropout(model, dropout_prob=float(ast_cfg.get("classifier_dropout_prob", 0.3)))
 
     checkpoint_path = Path(args.checkpoint) if args.checkpoint else dirs["checkpoints_dir"] / "best.pt"
     if not checkpoint_path.is_absolute():
@@ -162,7 +195,7 @@ def main() -> None:
             ds,
             batch_size=int(config["training"]["batch_size"]),
             shuffle=False,
-            num_workers=int(config["training"]["num_workers"]),
+            num_workers=max(0, eval_num_workers),
             pin_memory=bool(config["training"].get("pin_memory", True)),
             collate_fn=collator,
             drop_last=False,

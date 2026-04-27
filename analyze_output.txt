@@ -1,0 +1,27 @@
+
+🔍 Analyzing audio content quality (first 1000 files)...
+
+Analyzing content:   0%|          | 0/1000 [00:00<?, ?it/s]Analyzing content:   0%|          | 1/1000 [00:01<25:26,  1.53s/it]Analyzing content:   0%|          | 3/1000 [00:01<07:17,  2.28it/s]Analyzing content:   1%|          | 6/1000 [00:01<03:16,  5.05it/s]Analyzing content:   1%|          | 9/1000 [00:01<02:07,  7.79it/s]Analyzing content:   1%|          | 12/1000 [00:02<01:34, 10.40it/s]Analyzing content:   1%|▏         | 14/1000 [00:02<01:23, 11.86it/s]Analyzing content:   2%|▏         | 17/1000 [00:02<01:10, 14.02it/s]Analyzing content:   2%|▏         | 20/1000 [00:02<01:02, 15.77it/s]Analyzing content:   2%|▏         | 23/1000 [00:02<00:57, 17.14it/s]Analyzing content:   3%|▎         | 26/1000 [00:02<00:52, 18.73it/s]Analyzing content:   3%|▎         | 29/1000 [00:02<00:49, 19.72it/s]Analyzing content:   3%|▎         | 32/1000 [00:03<00:49, 19.39it/s]Analyzing content:   4%|▎         | 36/1000 [00:03<00:43, 22.12it/s]Analyzing content:   4%|▍         | 39/1000 [00:03<00:43, 22.03it/s]Analyzing content:   4%|▍         | 42/1000 [00:03<00:45, 21.00it/s]Analyzing content:   4%|▍         | 45/1000 [00:03<00:47, 20.31it/s]Analyzing content:   5%|▍         | 48/1000 [00:03<00:46, 20.48it/s]Analyzing content:   5%|▌         | 51/1000 [00:03<00:46, 20.49it/s]Analyzing content:   5%|▌         | 54/1000 [00:04<00:45, 20.69it/s]Analyzing content:   6%|▌         | 57/1000 [00:04<00:44, 20.98it/s]Analyzing content:   6%|▌         | 60/1000 [00:04<00:44, 20.92it/s]Analyzing content:   6%|▋         | 63/1000 [00:04<00:45, 20.59it/s]Analyzing content:   7%|▋         | 66/1000 [00:04<00:44, 20.96it/s]Analyzing content:   7%|▋         | 69/1000 [00:04<00:44, 20.98it/s]Analyzing content:   7%|▋         | 72/1000 [00:04<00:44, 21.00it/s]Analyzing content:   8%|▊         | 75/1000 [00:05<00:44, 21.01it/s]Analyzing content:   8%|▊         | 76/1000 [00:05<01:02, 14.79it/s]
+Traceback (most recent call last):
+  File "/home/devarsh/Work/Deep-Learning-Project/analyze_audio_content.py", line 267, in <module>
+    main()
+    ~~~~^^
+  File "/home/devarsh/Work/Deep-Learning-Project/analyze_audio_content.py", line 242, in main
+    audio_stats = analyzer.analyze_audio_content(max_files=args.max_files)
+  File "/home/devarsh/Work/Deep-Learning-Project/analyze_audio_content.py", line 56, in analyze_audio_content
+    y, sr = librosa.load(str(audio_path), sr=self.sr, mono=True)
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/devarsh/Work/Deep-Learning-Project/.venv/lib/python3.14/site-packages/librosa/core/audio.py", line 176, in load
+    y, sr_native = __soundfile_load(path, offset, duration, dtype)
+                   ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/devarsh/Work/Deep-Learning-Project/.venv/lib/python3.14/site-packages/librosa/core/audio.py", line 222, in __soundfile_load
+    y = sf_desc.read(frames=frame_duration, dtype=dtype, always_2d=False).T
+        ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/devarsh/Work/Deep-Learning-Project/.venv/lib/python3.14/site-packages/soundfile.py", line 942, in read
+    frames = self._array_io('read', out, frames)
+  File "/home/devarsh/Work/Deep-Learning-Project/.venv/lib/python3.14/site-packages/soundfile.py", line 1394, in _array_io
+    return self._cdata_io(action, cdata, ctype, frames)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/devarsh/Work/Deep-Learning-Project/.venv/lib/python3.14/site-packages/soundfile.py", line 1403, in _cdata_io
+    frames = func(self._file, data, frames)
+KeyboardInterrupt
