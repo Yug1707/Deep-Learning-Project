@@ -26,6 +26,7 @@ def create_ast_model(
     local_files_only: bool | None = None,
     hidden_dropout_prob: float | None = None,
     attention_probs_dropout_prob: float | None = None,
+    classifier_dropout_prob: float | None = None,
 ) -> ASTForAudioClassification:
     """Load pretrained AST model configured for multi-label classification with dropout regularization."""
     kwargs = {
@@ -41,7 +42,10 @@ def create_ast_model(
     if attention_probs_dropout_prob is not None:
         kwargs["attention_probs_dropout_prob"] = float(attention_probs_dropout_prob)
 
-    return ASTForAudioClassification.from_pretrained(model_name, **kwargs)
+    model = ASTForAudioClassification.from_pretrained(model_name, **kwargs)
+    if classifier_dropout_prob is not None:
+        apply_classifier_dropout(model, dropout_prob=float(classifier_dropout_prob))
+    return model
 
 
 def _resolve_backbone(model: ASTForAudioClassification):

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AST Genre Feedback</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <h1>AST Genre Feedback</h1>
+            <p id="statusText">Checking server...</p>
+          </div>
+          <button id="reloadButton" type="button">Reload Model</button>
+        </header>
+
+        <section class="panel upload-panel">
+          <form id="predictForm">
+            <div class="field-row">
+              <label for="audioFile">Audio file</label>
+              <input id="audioFile" name="file" type="file" accept="audio/*" required />
+            </div>
+
+            <div class="controls">
+              <label>
+                Threshold
+                <input id="thresholdInput" type="number" min="0" max="1" step="0.05" placeholder="0.50" />
+              </label>
+              <label>
+                Top K
+                <input id="topKInput" type="number" min="1" max="20" step="1" value="5" />
+              </label>
+              <button id="predictButton" type="submit">Predict</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="grid">
+          <section class="panel">
+            <div class="section-title">
+              <h2>Predictions</h2>
+              <span id="predictionMeta"></span>
+            </div>
+            <div id="predictionList" class="prediction-list empty-state">No prediction yet.</div>
+          </section>
+
+          <section class="panel">
+            <div class="section-title">
+              <h2>Feedback</h2>
+              <span id="bufferMeta"></span>
+            </div>
+            <form id="feedbackForm" class="feedback-form is-disabled">
+              <div class="segmented" role="group" aria-label="Prediction feedback">
+                <button id="correctButton" type="button" class="is-active" data-value="correct">Right</button>
+                <button id="wrongButton" type="button" data-value="wrong">Wrong</button>
+              </div>
+
+              <div id="genrePicker" class="genre-picker is-hidden"></div>
+
+              <label class="notes-label" for="notesInput">Notes</label>
+              <textarea id="notesInput" rows="3"></textarea>
+
+              <button id="submitFeedbackButton" type="submit" disabled>Submit Feedback</button>
+              <p id="feedbackMessage"></p>
+            </form>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+
