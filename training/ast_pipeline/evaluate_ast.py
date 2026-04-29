@@ -162,7 +162,6 @@ def main() -> None:
         local_files_only=local_only,
         hidden_dropout_prob=ast_cfg.get("hidden_dropout_prob"),
         attention_probs_dropout_prob=ast_cfg.get("attention_probs_dropout_prob"),
-        classifier_dropout_prob=ast_cfg.get("classifier_dropout_prob"),
     )
     apply_classifier_dropout(model, dropout_prob=float(ast_cfg.get("classifier_dropout_prob", 0.3)))
 
